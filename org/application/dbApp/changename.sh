@@ -1,0 +1,42 @@
+#! /bin/sh
+
+mv arm-none-linux-gnueabi-innochecksum innochecksum
+mv arm-none-linux-gnueabi-msql2mysql msql2mysql
+mv arm-none-linux-gnueabi-myisamchk myisamchk
+mv arm-none-linux-gnueabi-myisam_ftdump myisam_ftdump
+mv arm-none-linux-gnueabi-myisamlog myisamlog
+mv arm-none-linux-gnueabi-myisampack myisampack
+mv arm-none-linux-gnueabi-my_print_defaults my_print_defaults
+mv arm-none-linux-gnueabi-mysql mysql
+mv arm-none-linux-gnueabi-mysqlaccess mysqlaccess
+mv arm-none-linux-gnueabi-mysqladmin mysqladmin
+mv arm-none-linux-gnueabi-mysqlbinlog mysqlbinlog
+mv arm-none-linux-gnueabi-mysqlbug mysqlbug
+mv arm-none-linux-gnueabi-mysqlcheck mysqlcheck
+mv arm-none-linux-gnueabi-mysql_client_test mysql_client_test
+mv arm-none-linux-gnueabi-mysql_config mysql_config
+mv arm-none-linux-gnueabi-mysql_convert_table_format mysql_convert_table_format
+mv arm-none-linux-gnueabi-mysqld_multi mysqld_multi
+mv arm-none-linux-gnueabi-mysqld_safe mysqld_safe
+mv arm-none-linux-gnueabi-mysqldump mysqldump
+mv arm-none-linux-gnueabi-mysqldumpslow mysqldumpslow
+mv arm-none-linux-gnueabi-mysql_find_rows mysql_find_rows
+mv arm-none-linux-gnueabi-mysql_fix_extensions mysql_fix_extensions
+mv arm-none-linux-gnueabi-mysql_fix_privilege_tables mysql_fix_privilege_tables
+mv arm-none-linux-gnueabi-mysqlhotcopy mysqlhotcopy
+mv arm-none-linux-gnueabi-mysqlimport mysqlimport
+mv arm-none-linux-gnueabi-mysql_install_db mysql_install_db
+mv arm-none-linux-gnueabi-mysql_secure_installation mysql_secure_installation
+mv arm-none-linux-gnueabi-mysql_setpermission mysql_setpermission
+mv arm-none-linux-gnueabi-mysqlshow mysqlshow
+mv arm-none-linux-gnueabi-mysqlslap mysqlslap
+mv arm-none-linux-gnueabi-mysqltest mysqltest
+mv arm-none-linux-gnueabi-mysql_tzinfo_to_sql mysql_tzinfo_to_sql
+mv arm-none-linux-gnueabi-mysql_upgrade mysql_upgrade
+mv arm-none-linux-gnueabi-mysql_waitpid mysql_waitpid
+mv arm-none-linux-gnueabi-mysql_zap mysql_zap
+mv arm-none-linux-gnueabi-perror perror
+mv arm-none-linux-gnueabi-replace replace
+mv arm-none-linux-gnueabi-resolveip resolveip
+mv arm-none-linux-gnueabi-resolve_stack_dump resolve_stack_dump
+
