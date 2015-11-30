@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <signal.h>
 
 #include "libcommon.h"
 #include "libwindowmanager.h"
 
 static struct windowmanager_context* context;
+static volatile BOOL 
 
 bool windowmanager_init(struct windowmanager_operation* ops)
 {

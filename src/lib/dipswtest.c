@@ -24,6 +24,7 @@ void doHelp(void)
 typedef struct {
 	short int fd;// dipswitch 파일 디스크립터
 	//차후에 전역변수로 쓰일 것들 여기에..
+	int curstate;
 } dipswContext;
 
 void dipsw_init(dipswContext* context){
@@ -33,6 +34,23 @@ void dipsw_init(dipswContext* context){
 void dipsw_destroy(dipswContext* context){
 	close(context->fd);   
 };
+
+BOOL dipsw_test()
+{
+	int e;
+	read(context->fd, &e, 4);
+
+	return e == dipswContext->curstate;
+}
+
+int dipsw_isdown(int pos)
+{
+	int e;
+	read(context->fd, &e, 4);
+	context->curstate = e &= 0xF;
+
+	return context->curstate >> pos & 0x1;
+}
 
 int num_of_dipsw(dipswContext* context){//dipsw가 몇 번이 on되엇는지 
 	int retvalue;

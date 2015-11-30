@@ -9,14 +9,71 @@
 #define MAX_TOUCH_X 0x740
 #define MAX_TOUCH_Y 0x540
 
-static struct screen_context context;
+static struct {
+	int width, height;
+	int bits_per_pixel;
+	int line_length;
+
+	int fb_fd;
+	int touch_fd;
+	int mem_size;
+	unsigned char* fb_mem;
+} context;
+
 
 BOOL initScreen()
 {
+	char buf[BUFSIZ];
+
+	sprintf(buf, "%s%d", EVENT_STR, 2);
+	context.touch_fd = open(buf, O_RDONLY);
+
+	if (-1 == context.touch_fd) {
+		destroyScreen();
+	}
+
+	if (access(FBDEV_FILE, F_OK)) {
+		printf("%s: access error\n", FBDEV_FILE);
+		destroyScreen();
+
+		return FALSE;
+	}
+
+	if ((fb_fd = open(FBDEV_FILE, O_RDWR)) < 0) {
+		printf("%s: open error\n", FBDEV_FILE);
+
+		destroyScreen();
+
+		return FALSE;
+	}
+
+	struct fb_var_screeninfo fbvar;
+	struct fb_fix_screeninfo fbfix;
+
+	if (ioctl(fb_fd, FBIOGET_VSCREENINFO, &fbvar)) {
+		printf("%s: ioctl error - FBIOGET_VSCREENINFO\n", FBDEV_FILE);
+		return FALSE;
+	}
+
+	if (ioctl(fb_fd, FBIOGET_FSCREENINFO, &fbfix)) {
+		printf("%s: ioctl error - FBIOGET_FSCREENINFO\n", FBDEV_FILE);
+		return FALSE;
+	}
+
+	context.width  			= fbvar.xres;
+	context.height 			= fbvar.yres;
+	context.bits_per_pixel 	= fbvar.bits_per_pixel;
+	context.line_length 	= fbfix.line_length;
+	context.fb_fd 			= fb_fd;
+	int mem_size = context.width * context.height * 4;
+	context.fb_mem			= (unsigned char*)mmap(0, mem_size, PROT_READ|PROT_WRITE, MAP_SHARED, context.fb_fd, 0);
+
+	return TRUE;
 }
 
 void destroyScreen()
 {
+	close(fb_fd);
 }
 
 
