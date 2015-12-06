@@ -13,6 +13,18 @@
 
 #define DIPSWITCH_PATH		"/dev/cndipsw"
 
+#ifndef BOOL
+#define BOOL int
+#endif // BOOL
+
+#ifndef TRUE
+#define TRUE 1
+#endif // TRUe
+
+#ifndef FALSE
+#define FALSE 0
+#endif // FALSE
+
 static dipswContext context;
 
 void dipsw_init(){
@@ -23,15 +35,34 @@ void dipsw_destroy(){
 	close(context.fd);   
 };
 
-int num_of_dipsw(){//return what number is on 
 
-	int shiftvalue;
- 	unsigned short temp = 1;
+BOOL dipsw_test()
+{
+	int e;
+	read(context.fd, &e, 4);
 
-	read(context.fd,&shiftvalue,4);
-	temp = temp << shiftvalue;
+	return e == context.curstate;
+}
 
-	return temp;
-};
+int dipsw_curstate()
+{
+	int e;
+	read(context.fd, &e, 4);
+	return e;
+}
 
 
+int main(int argc , char **argv)
+{
+	int retvalue;
+
+	
+
+	// open  driver 
+	dipsw_init();
+	retvalue = dipsw_curstate();
+	printf("retvalue:0x%X\n", retvalue);
+	dipsw_destroy();
+	
+	return 0;
+}
