@@ -25,7 +25,7 @@ void busled_destroy()//제거
 	close(context.fd);
 }
 
-void severity_classified(unsigned char severity )
+void severity_classified(unsigned char severity )//severity가 3이면 왼쪽부터 3개 led 점등된다.
 {					//1에서는 점등되고 0에서는 소등	
 	unsigned char  temp = 1;
 	//	read(context.fd,&rdata,4);	
