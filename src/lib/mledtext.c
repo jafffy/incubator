@@ -100,60 +100,77 @@ void mled_destory() // destory
 
 
 #define ONE_LINE_TIME_U         1000
-void mled_display(int num)// 10 sec print
+void mled_display(unsigned int num)// 10 sec print
 {
 	int i, j;
-        int timeS = 10;
-        int temp, final_position,energization, cnt, mul = 1;
+	int timeS, totalCount;
+        int final_position,energization, cnt, mul;
         int cSelCounter,loopCounter;
-        int totalCount;
-        unsigned short sumBuf[5];
-        unsigned short wdata[2];
+	unsigned int temp;
+	int sumBuf[5] = {0, 0, 0, 0, 0};
+	unsigned short wdata[2];
 
-        totalCount = timeS * (1000000/ ONE_LINE_TIME_U);
-
-        cSelCounter = 0;
+	timeS = 3;
+	totalCount = timeS*(1000000 / ONE_LINE_TIME_U);
+	
         loopCounter = 0;
 
         temp = num;
+	mul = 4;
 
         for(i = 0; i < 3; i++)  // Virtual Array
         {
-                for(j = 4; j >= 0; j--)
+                for(j = 0; j < 5; j++)
                 {
-                        temp = temp >> 1; //right bit operation of temp
                         final_position = temp & 0x01; // final bit extract 
-                        sumBuf[j] = final_position * mul;  // final bit sum
-                }
-                mul = mul * 2; //mul => 1 => 2 => 4
-        }
-
-        for(i = 0; i < 5; i++)
-        {
-                wdata[0] = 0; // wdata[0] initialization
-                wdata[1] = 0; // wdata[1] initialization
-                while(1) // write process
-                {
-                        if(i == 0) wdata[0] = NumData_first[sumBuf[i]][cSelCounter]; // i = 0 : first column
-                        else if(i == 1) wdata[0] = NumData_second[sumBuf[i]][cSelCounter]; // i = 1 : second column
-                        else if(i == 2) // i = 2 : third column
-                        {
-                                if(cSelCounter == 0) // if cSelCounter = 0, left dot matrix
-                                        wdata[0] = NumData_third[sumBuf[i]][cSelCounter];
-                                else // if cSelCounter = 1, right dot matrix
-                                        wdata[1] = NumData_third[sumBuf[i]][cSelCounter];
-                        }
-                        else if(i == 3) wdata[1] = NumData_four[sumBuf[i]][cSelCounter]; // i = 3 : four column
-                        else wdata[1] = NumData_five[sumBuf[i]][cSelCounter]; // i = 4 : five column
+                        temp = temp >> 1; //right bit operation of temp
+			sumBuf[j] = sumBuf[j] + (final_position * mul);  // final bit sum
+		}
+	       	mul = mul / 2; //mul => 4 => 2 => 1
+	 }
+	while(1){
+        	for(i = 0; i < 5; i++)
+        	{
+			cSelCounter = 0;
+                	wdata[0] = 0; // wdata[0] initialization
+                	wdata[1] = 0; // wdata[1] initialization
+                	while(1) // write process
+                	{
+                        	if(i == 0) wdata[0] = NumData_first[sumBuf[i]][cSelCounter]; // i = 0 : first column
+                        	else if(i == 1) wdata[0] = NumData_second[sumBuf[i]][cSelCounter]; // i = 1 : second column
+                        	else if(i == 2) // i = 2 : third column
+                        	{
+                                	if(cSelCounter == 0) // if cSelCounter = 0, left dot matrix
+                                        	wdata[0] = NumData_third[sumBuf[i]][cSelCounter];
+                                	else // if cSelCounter = 1, right dot matrix
+                                	        wdata[1] = NumData_third[sumBuf[i]][cSelCounter];
+                       	 	}
+                       		else if(i == 3) wdata[1] = NumData_four[sumBuf[i]][cSelCounter]; // i = 3 : four column
+                       		else wdata[1] = NumData_five[sumBuf[i]][cSelCounter]; // i = 4 : five column
                         
-			write(context.fd, (unsigned char*)wdata, 4); // write : wdata array
+				write(context.fd, (unsigned char*)wdata, 4); // write : wdata array
 
-                        cSelCounter++; // column ++
-			usleep(ONE_LINE_TIME_U);
+        	                cSelCounter++; // column ++
+				usleep(ONE_LINE_TIME_U);
 
-                        if ( cSelCounter == 2) break;
-                }
-        }
+                        	if ( cSelCounter == 2) break;
+                	}
+		}
+	loopCounter++;
+        if(loopCounter > totalCount) break;
+	}
 }
 
+int main(int argc, char **argv)
+{
+        unsigned int num = 146;
+	//open driver
+	
+	mled_init();
+
+	mled_display(num);
+
+	mled_destory();
+	return 1;
+}
    

@@ -9,10 +9,22 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "libcommon.h"
 #include "liboled.h"
 
 #define OLED_DRIVER_PATH	"/dev/cnoled"
+
+#ifndef BOOL
+#define BOOL int
+#endif // BOOL
+
+#ifndef TRUE
+#define TRUE 1
+#endif // TRUe
+
+#ifndef FALSE
+#define FALSE 0
+#endif // FALSE
+
 
 #define RST_BIT_MASK		0xEFFF		
 #define CS_BIT_MASK		0xF7FF
@@ -28,7 +40,7 @@
 #define CMD_READ_RAM		0x5D
 #define CMD_LOCK		0xFD
 
-static oledContext context;
+struct oledContext context;
 
 static unsigned short gamma[64]= 
 {
@@ -164,13 +176,13 @@ static int setCmdLock(int bLock)
 	return TRUE;
 }
 
-void oled_open()//open the device driver
+void oled_init()//open the device driver
 {
 	context.fd = open(OLED_DRIVER_PATH,O_RDWR);
 }
 void oled_destroy()//close the device driver
 {
-	close(oledCont.fd);
+	close(context.fd);
 }
 
 void reset()//oled chip reset
@@ -292,12 +304,9 @@ void oled_imageLoading(const char* fileName)//load the image and put fileName
 	unsigned char* temp =NULL;//temporary space
 	int  width , height;
 
+	setting_init_oled();
+
 	imgfile = open(fileName , O_RDONLY );
-	if ( imgfile < 0 ) 
-	{
-		printf ("imageloading(%s)  file is not exist . err.\n",fileName);
-		return FALSE;
-	}
 	setCmdLock(FALSE);//release command lock
 
 
@@ -309,8 +318,16 @@ void oled_imageLoading(const char* fileName)//load the image and put fileName
 	read(imgfile, temp , 128 * 128 *3 );//copy to temp from imgfile
 	close(imgfile);//close the using imagefile
 
-	writeData(128 * 128 *3 ,temp );//load image to oled
+	writeData(128 * 128 *3 ,temp);//load image to oled
 	setCmdLock(TRUE);//command lock
 	
 	free(temp);//free using memory
+}
+
+int main(int argc, char** argv)
+{
+	oled_init();
+	oled_imageLoading(argv[1]);//이미지가 있는 곳의 메모리 주소 
+	oled_destroy();
+	return 0;
 }
